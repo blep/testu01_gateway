@@ -31,6 +31,9 @@ To test the RNG, we just pipe the output of the script to a run of the docker im
 python testrng.py | docker run -it blep/TESTU01_gateway:latest  --smallcrunch
 ```
 
+# Understanding how to use TestU01
+
+See this [PCG Blog Entry](http://www.pcg-random.org/posts/pcg-passes-practrand.html).
 
 
 # Licensing
