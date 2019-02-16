@@ -2,8 +2,9 @@
 
 from random import randint
 import sys
+from struct import pack
 
-write = sys.stdout.write
+write = sys.stdout.buffer.write
 limit = 2**32-1
 while True:
-    write("%08x" % randint(0,limit))
+    write(pack("=I", randint(0,limit)))
