@@ -13,7 +13,7 @@ extern "C" unsigned long ProxyRng_getUInt32(void *param, void *state);
 extern "C" double ProxyRng_getDouble01(void *param, void *state);
 
 /**
- * Received uint32_t random number on stdin encoded in hexa with exactly 8 hexa digit per number and no spacing between numbers.
+ * Received uint32_t random number on stdin encoded in host endianness.
  */
 struct ProxyRng : unif01_Gen
 {
@@ -39,14 +39,6 @@ struct ProxyRng : unif01_Gen
 };
 
 
-
-static const uint8_t hexaTable[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
-
-static inline uint32_t digitFromHexa(char c)
-{
-    return hexaTable[(c - '0') & ~0x20]; // The & ~0x20 force letter to upper case
-}
-
 static inline uint32_t reverseBits(uint32_t n) {
     n = (n >> 1) & 0x55555555 | (n << 1) & 0xaaaaaaaa;
     n = (n >> 2) & 0x33333333 | (n << 2) & 0xcccccccc;
@@ -56,30 +48,15 @@ static inline uint32_t reverseBits(uint32_t n) {
     return n;
 }
 
-static uint32_t decodeUInt32(char *digits)
-{
-    uint32_t v = 0;
-    for ( size_t i=0; i < 8; ++i)
-    {
-        v = (v << 4) | digitFromHexa(digits[i]);
-    }
-    return v;
-}
-
 inline uint32_t ProxyRng::getUInt32()
 {
     if ( receivedIndex == bufferSize ) // refill the buffer
     {
-        static char fileBuffer[bufferSize * 8];
-        char *read = fgets(fileBuffer, sizeof(fileBuffer), stdin);
+        char *read = fgets((char *)received, sizeof(received), stdin);
         if ( read == nullptr)
         {
             fprintf(stdout, "Fatal error: failed to read random number from stdin...");
-            abort();
-        }
-        for ( size_t index=0; index < bufferSize; ++index )
-        {
-            received[index] = decodeUInt32(read + 8*index);
+            exit(1);
         }
         receivedIndex = 0;
     }
@@ -144,8 +121,12 @@ int main (int argc, const char **argv )
         {
             reverseBits = true;
         }
-        else if ( arg == "-h"  ||  arg == "--help" )
+        else 
         {
+            if ( arg != "-h"  &&  arg != "--help" ))
+            {
+                printf("Unknown option: %s\n", arg.c_str());
+            }
             printf(R"HELP(
 TestU01_gateway simulate a random number generator by reading generated
 number from stdin.
@@ -162,8 +143,8 @@ Options:
 -r, --reverse-bits : reverse bits of the decoded 32 bits integer (bit 0 is 
                      swapped with bit 31, bit 1 with bit 30...).
             )HELP");
+            exit(0);
         }
     }
 }
-
 
