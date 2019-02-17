@@ -155,6 +155,8 @@ Options:
 -b, --big-crush    : run BigCrunch tests
 -r, --reverse-bits : reverse bits of the decoded 32 bits integer (bit 0 is 
                      swapped with bit 31, bit 1 with bit 30...).
+
+See https://github.com/blep/testu01_gateway for additional details.
 )HELP");
             exit(0);
         }
