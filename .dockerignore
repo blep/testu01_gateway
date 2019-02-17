@@ -1,0 +1,9 @@
+# Build directory
+build/
+
+# Test data for debugging
+rng.data
+
+# IDE & git
+.git/
+.vscode/
