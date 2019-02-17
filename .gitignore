@@ -36,3 +36,6 @@ build/
 
 # Test data for debugging
 rng.data
+
+# IDE
+.vscode/
