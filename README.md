@@ -34,6 +34,19 @@ python testrng.py | docker run -it blep/TESTU01_gateway:latest --smallcrunch
 See this [PCG Blog Entry](http://www.pcg-random.org/posts/pcg-passes-practrand.html).
 
 
+# Building from the source
+
+Install C++ development dependencies:
+```bash
+mkdir build && cd build && cmake -G "Unix Makefiles" .. && make
+```
+
+From the source root directory:
+
+```bash
+mkdir build && cd build && cmake -G "Unix Makefiles" .. && make
+```
+
 # Licensing
 
 Content of this repository has the MIT license.
