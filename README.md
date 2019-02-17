@@ -11,7 +11,7 @@ This makes it easy to test the quality of a RNG (random number generator) regard
 ## Example of usage
 
 ```python
-# test_rng_example.py
+# examples/test_rng_example.py
 from random import randint
 import sys
 from struct import pack
@@ -27,7 +27,7 @@ This small script just output an endless stream of 32 bits random number in bina
 To test the RNG, we just pipe the output of the script to test TestU01_gateway executable in the docker image:
 
 ```bash
-python testrng.py | docker run -it blep/TESTU01_gateway:latest --smallcrunch
+python3 test_rng_example.py | docker run -it blep/TESTU01_gateway:latest --smallcrunch
 ```
 
 ## Understanding how to use TestU01

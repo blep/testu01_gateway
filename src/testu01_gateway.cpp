@@ -14,6 +14,8 @@ extern "C" unsigned long ProxyRng_getUInt32(void *param, void *state);
 
 extern "C" double ProxyRng_getDouble01(void *param, void *state);
 
+extern "C" void ProxyRng_writeState(void *state);
+
 /**
  * Received uint32_t random number on stdin encoded in host endianness.
  */
@@ -26,18 +28,22 @@ struct ProxyRng : unif01_Gen
         this->shouldReverseBits = shouldReverseBits;
         this->GetBits = &ProxyRng_getUInt32;
         this->GetU01 = &ProxyRng_getDouble01;
+        this->Write = &ProxyRng_writeState;
         this->param = this;
         this->state = this;
+        this->file = stdin;
     }
     
     uint32_t getUInt32();
     
 
-    static const size_t bufferSize = 256;
+    static const size_t bufferSize = 1024*1024;
     size_t receivedIndex = bufferSize;
     bool shouldReverseBits;
     uint32_t received[bufferSize];
     std::string nameStr;
+    FILE *file;
+    unsigned long long sequenceNumber = 0;
 };
 
 
@@ -54,10 +60,10 @@ inline uint32_t ProxyRng::getUInt32()
 {
     if ( receivedIndex == bufferSize ) // refill the buffer
     {
-        char *read = fgets((char *)received, sizeof(received), stdin);
-        if ( read == nullptr)
+        size_t nbItemRead = fread(&received[0], sizeof(received[0]), bufferSize, file);
+        if ( nbItemRead != bufferSize)
         {
-            fprintf(stdout, "Fatal error: failed to read random number from stdin...");
+            fprintf(stdout, "\nFatal error: failed to read random number from stdin...");
             exit(1);
         }
         receivedIndex = 0;
@@ -66,6 +72,7 @@ inline uint32_t ProxyRng::getUInt32()
     {
         return reverseBits(received[receivedIndex]);
     }
+    ++sequenceNumber;
     return received[receivedIndex];
 }
 
@@ -80,6 +87,11 @@ extern "C" double ProxyRng_getDouble01(void *param, void *state)
 {
     return static_cast<ProxyRng *>(state)->getUInt32() * unif01_INV32;
 }
+
+extern "C" void ProxyRng_writeState(void *state)
+{
+    printf("%llu", static_cast<ProxyRng *>(state)->sequenceNumber);
+};
 
 
 typedef void (*RunnerFn)(unif01_Gen * gen);
@@ -147,6 +159,7 @@ Options:
             exit(0);
         }
     }
+
     ProxyRng rng{name, reverseBits};
     runner(&rng);
     return 0;
