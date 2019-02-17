@@ -155,7 +155,7 @@ Options:
 -b, --big-crush    : run BigCrunch tests
 -r, --reverse-bits : reverse bits of the decoded 32 bits integer (bit 0 is 
                      swapped with bit 31, bit 1 with bit 30...).
-            )HELP");
+)HELP");
             exit(0);
         }
     }

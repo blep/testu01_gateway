@@ -39,7 +39,7 @@ See this [PCG Blog Entry](http://www.pcg-random.org/posts/pcg-passes-practrand.h
 Install C++ development dependencies:
 
 ```bash
-mkdir build && cd build && cmake -G "Unix Makefiles" .. && make
+apt install git git-gui cmake g++ python3
 ```
 
 From the source root directory:
