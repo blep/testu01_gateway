@@ -22,13 +22,21 @@ while True:
     write(pack("=I", randint(0,limit)))
 ```
 
-This small script just output an endless stream of 32 bits random number in binary (4 bytes per number).
+This small script just output an endless stream of 32 bits random number 
+in binary (4 bytes per number).
 
-To test the RNG, we just pipe the output of the script to test TestU01_gateway executable in the docker image:
+To test the RNG, we just pipe the output of the script to test 
+`testu01_gateway` executable in the docker image:
 
 ```bash
 python3 test_rng_example.py | docker run -it blep/TESTU01_gateway:latest --smallcrunch
 ```
+
+## Docker image
+
+The docker image is available on [dockerhub](https://github.com/blep/testu01_gateway)
+and published by dockerhub's trusted build system (dockerhub compiles and publishes
+the image directly from the github sources).
 
 ## Understanding how to use TestU01
 
