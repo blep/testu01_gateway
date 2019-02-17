@@ -7,6 +7,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string>
+
 
 extern "C" unsigned long ProxyRng_getUInt32(void *param, void *state);
 
@@ -20,7 +22,7 @@ struct ProxyRng : unif01_Gen
     ProxyRng( const std::string &name, bool shouldReverseBits)
     {
         this->nameStr = name;
-        this->name = nameStr.c_str();
+        this->name = (char*)(nameStr.c_str());
         this->shouldReverseBits = shouldReverseBits;
         this->GetBits = &ProxyRng_getUInt32;
         this->GetU01 = &ProxyRng_getDouble01;
@@ -87,7 +89,6 @@ int main (int argc, const char **argv )
 {
     ++argv; --argc;
 
-    ProxyRng rng = {};
     RunnerFn runner = &bbattery_Crush;
     std::string name = "UnknownRng";
     bool reverseBits = false;
@@ -111,7 +112,7 @@ int main (int argc, const char **argv )
         {
             if ( argc == 0 )
             {
-                printf("Expected name after --name.")
+                printf("Expected name after --name.");
                 exit(2);
             }
             name = *argv++;
@@ -123,7 +124,7 @@ int main (int argc, const char **argv )
         }
         else 
         {
-            if ( arg != "-h"  &&  arg != "--help" ))
+            if ( arg != "-h"  &&  arg != "--help" )
             {
                 printf("Unknown option: %s\n", arg.c_str());
             }
@@ -146,5 +147,8 @@ Options:
             exit(0);
         }
     }
+    ProxyRng rng{name, reverseBits};
+    runner(&rng);
+    return 0;
 }
 
