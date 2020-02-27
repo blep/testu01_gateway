@@ -29,7 +29,7 @@ To test the RNG, we just pipe the output of the script to test
 `testu01_gateway` executable in the docker image:
 
 ```bash
-python3 test_rng_example.py | docker run -it blep/TESTU01_gateway:latest --smallcrunch
+python3 test_rng_example.py | docker run --rm -it blep/test01:latest --small-crush
 ```
 
 ## Command-line
@@ -80,4 +80,4 @@ mkdir build && cd build && cmake -G "Unix Makefiles" .. && make
 
 Content of this repository has the MIT license.
 
-It relies on TestU01 library that has owns [license](http://simul.iro.umontreal.ca/testu01/copyright.html).
+It relies on TestU01 library that has its own [license](http://simul.iro.umontreal.ca/testu01/copyright.html).
