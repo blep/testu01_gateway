@@ -73,7 +73,7 @@ inline uint32_t ProxyRng::getUInt32()
         return reverseBits(received[receivedIndex]);
     }
     ++sequenceNumber;
-    return received[receivedIndex];
+    return received[receivedIndex++];
 }
 
 
